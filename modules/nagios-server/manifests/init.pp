@@ -6,7 +6,7 @@ class nagios-server {
 		source => "puppet:///modules/nagios-server/htpasswd.users",
 		owner => 'root',
 		group => 'root',
-		mode => '0640',
+		mode => '0644',
 		require => Class['nagios-server::install']
 	}
 }
