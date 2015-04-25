@@ -34,13 +34,21 @@ class nagios-server::config {
                  target => '/etc/nagios3/conf.d/ppt_hosts.cfg',
                  alias => 'db',
                  address => '10.25.1.46',
-                 check_period => '24x7',
-                 max_check_attempts => 3,
-                 check_command => 'check-host-alive',
-                 notification_interval => 30,
-                 notification_period => '24x7',
-                 notification_options => 'd,u,r',
-                 contact_groups => 'sysadmins',
+		 use => generic-host,
+	}
+
+	nagios_host { 'storage.sqrawler.com':
+                 target => '/etc/nagios3/conf.d/ppt_hosts.cfg',
+                 alias => 'storage',
+                 address => '10.25.1.42',
+		 use => generic-host,
+	}
+
+	nagios_host { 'app.sqrawler.com':
+                 target => '/etc/nagios3/conf.d/ppt_hosts.cfg',
+                 alias => 'app',
+                 address => '10.25.1.44',
+		 use => generic-host,
 	}
 
 	nagios_service { 'MySQL':
@@ -48,19 +56,34 @@ class nagios-server::config {
               hostgroup_name => 'db-servers',
               target => '/etc/nagios3/conf.d/ppt_mysql_service.cfg',
               check_command => 'check_mysql_cmdlinecred!$USER3$!$USER4$',
-              max_check_attempts => 3,
-              retry_check_interval => 1,
-              normal_check_interval => 5,
-              check_period => '24x7',
-              notification_interval => 30,
-              notification_period => '24x7',
-              notification_options => 'w,u,c',
-              contact_groups => 'sysadmins',
+	      use => generic-service
+	}
+
+	nagios_service { 'DiskSpace':
+		service_description => 'Disk Space',
+		hostgroup_name => 'debian-hosts',
+		target => '/etc/nagios3/conf.d/ppt_diskspace_service.cfg',
+		check_command => 'check_nrpe_1arg!check_hd',
+		use => generic-service
+	}
+
+	nagios_service { 'CPU Load':
+		service_description => 'CPU Load',
+		hostgroup_name => 'debian-hosts',
+		target => '/etc/nagios3/conf.d/ppt_cpuload.cfg',
+		check_command => 'check_nrpe_1arg!check_load',
+		use => generic-service
 	}
 
 	nagios_hostgroup { 'db-servers':
               target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
               alias => 'Database Servers',
               members => 'db.sqrawler.com',
+	}
+
+	nagios_hostgroup { 'debian-hosts':
+		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
+		alias => 'Debian Hosts',
+		members => 'db.sqrawler.com, app.sqrawler.com, storage.sqrawler.com'
 	}
 }

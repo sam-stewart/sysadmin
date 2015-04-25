@@ -3,19 +3,21 @@ node 'db' {
 	include sudo
 	include mysql
 	include apt-cron
+	include nrpe
 }
 
 node 'app' {
 	include vim
 	include sudo
-	include hosts_file
 	include apt-cron
+	include nrpe
 }
 
 node 'storage' {
 	include vim
 	include sudo
 	include apt-cron
+	include nrpe
 }
 
 node 'mgmt' {
