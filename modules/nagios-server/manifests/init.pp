@@ -1,5 +1,5 @@
 class nagios-server {
-	include nagios-server::install, nagios-server::config, nagios-server::service
+	include nagios-server::install, nagios-server::service, nagios-server::config
 
 	file { '/etc/nagios3/htpasswd.users':
 		ensure => present,

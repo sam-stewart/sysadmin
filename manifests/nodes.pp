@@ -4,6 +4,7 @@ node 'db' {
 	include mysql
 	include apt-cron
 	include nrpe
+	include ntp
 }
 
 node 'app' {
@@ -11,6 +12,7 @@ node 'app' {
 	include sudo
 	include apt-cron
 	include nrpe
+	include ntp
 }
 
 node 'storage' {
@@ -18,13 +20,16 @@ node 'storage' {
 	include sudo
 	include apt-cron
 	include nrpe
+	include ntp
 }
 
 node 'mgmt' {
 	include vim
 	include sudo
+	include nrpe
 	include nagios-server
 	include apt-cron
+	include ntp
 }
 
 node 'ad' {

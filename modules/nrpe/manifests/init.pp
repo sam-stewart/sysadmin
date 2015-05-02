@@ -19,7 +19,7 @@
 # Copyright 2013 Computer Action Team, unless otherwise noted.
 #
 class nrpe (
-  $allowed_hosts = ['10.25.1.41'],
+  $allowed_hosts = ['10.25.1.41', 'localhost', '127.0.0.1'],
   $config        = $nrpe::params::nrpe_config,
   $include_dir   = $nrpe::params::nrpe_include_dir,
   $package_name  = $nrpe::params::nrpe_packages,
@@ -67,5 +67,16 @@ class nrpe (
 	ensure => present,
 	command => 'check_load -w 15,10,5 -c 30,25,20'
   }
-	
+
+  command {
+    'check_procs':
+	ensure => present,
+	command => 'check_procs -w 250 -c 400' 
+  }
+
+ command {
+   'check_users':
+	ensure => present,
+	command => 'check_users -w 3 -c 10'
+  }
 }
