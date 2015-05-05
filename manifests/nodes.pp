@@ -30,6 +30,7 @@ node 'mgmt' {
 	include nagios-server
 	include apt-cron
 	include ntp
+	include exim
 }
 
 node 'ad' {

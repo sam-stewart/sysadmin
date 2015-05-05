@@ -1,0 +1,1 @@
+/usr/local/bin/yowsup-cli demos -c /etc/yowsup/config -s $CONTACTPAGER$ "***** Nagios *****  Notification Type: $NOTIFICATIONTYPE$  Service: $SERVICEDESC$ Host: $HOSTALIAS$ State: $SERVICESTATE$ Date/Time: $LONGDATETIME$ Additional Info: $SERVICEOUTPUT$"

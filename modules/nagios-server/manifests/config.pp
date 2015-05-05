@@ -14,7 +14,7 @@ class nagios-server::config {
 		check_command => 'check-host-alive',
 		check_period => '24x7',
 		max_check_attempts => '3',
-		notification_interval => '30',
+		notification_interval => '15',
 		notification_period => '24x7',
 		notification_options => 'd,u,r',
 		contact_groups => 'sysadmins',
@@ -42,7 +42,8 @@ class nagios-server::config {
 		retry_check_interval => '1',
 		max_check_attempts => '3',
 		notification_period => '24x7',
-		notification_options => 'w,u,c',
+		notification_options => 'w,u,c,r,f',
+		notification_interval => '15',
 		contact_groups => 'sysadmins',
 		register => '0',
 		notify => Class["nagios-server::service"]
@@ -50,12 +51,14 @@ class nagios-server::config {
 
 	nagios_contact { 'generic-contact-sysadmin':
 		target => '/etc/nagios3/conf.d/ppt_genericcontacts.cfg',
+		service_notifications_enabled => '1',
+		host_notifications_enabled => '1',
 		service_notification_period => '24x7',
 		host_notification_period => '24x7',
-		service_notification_options => 'w,u,c,r',
-		host_notification_options => 'd,r',
-		service_notification_commands => 'notify-service-by-email',
-		host_notification_commands => 'notify-host-by-email',
+		service_notification_options => 'w,u,c,r,f',
+		host_notification_options => 'd,u,r,f,s',
+		service_notification_commands => 'notify-service-by-email, notify-service-by-whatsapp',
+		host_notification_commands => 'notify-host-by-email, notify-host-by-whatsapp',
 		notify => Class["nagios-server::service"],
 		register => '0',
 	}	
@@ -67,14 +70,16 @@ class nagios-server::config {
 	nagios_contact { 'fostt2':
 		target => '/etc/nagios3/conf.d/ppt_contacts.cfg',
 		alias => 'Thomas Foster',
-		email => 'root@localhost',
+		email => '11fostth@gmail.com',
+		pager => '64273756740',
 		use => 'generic-contact-sysadmin',
 	}
 
 	nagios_contact { 'stewasc3':
 		target => '/etc/nagios3/conf.d/ppt_contacts.cfg',
 		alias => 'Samuel Stewart',
-		email => 'root@localhost',
+		email => 'stewasc3@student.op.ac.nz',
+		pager => '64275651111',
 		use => 'generic-contact-sysadmin'
 	}
 
