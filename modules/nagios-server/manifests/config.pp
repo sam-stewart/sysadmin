@@ -14,7 +14,7 @@ class nagios-server::config {
 		check_command => 'check-host-alive',
 		check_period => '24x7',
 		max_check_attempts => '3',
-		notification_interval => '15',
+		notification_interval => '30',
 		notification_period => '24x7',
 		notification_options => 'd,u,r',
 		contact_groups => 'sysadmins',
@@ -43,7 +43,7 @@ class nagios-server::config {
 		max_check_attempts => '3',
 		notification_period => '24x7',
 		notification_options => 'w,u,c,r,f',
-		notification_interval => '15',
+		notification_interval => '30',
 		contact_groups => 'sysadmins',
 		register => '0',
 		notify => Class["nagios-server::service"]
@@ -122,10 +122,24 @@ class nagios-server::config {
 		use => generic-host
 	}
 
+	nagios_host { 'ad.sqrawler.com':
+		target => '/etc/nagios3/conf.d/ppt_hosts.cfg',
+		alias => 'ad',
+		address => '10.25.1.45',
+		use => generic-host
+	}
+
 	nagios_hostgroup { 'db-servers':
 		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
 		alias => 'Database Servers',
 		members => 'db.sqrawler.com',
+		notify => Class["nagios-server::service"],
+	}
+
+	nagios_hostgroup { 'windows-servers':
+		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
+		alias => 'Windows Servers',
+		members => 'ad.sqrawler.com',
 		notify => Class["nagios-server::service"],
 	}
 
@@ -217,4 +231,48 @@ class nagios-server::config {
 	}
 	
 	#### END NRPE SERVICES DEFINITIONS ####
+
+	#### NT SERVICE DEFINITIONS ####
+
+	nagios_service { 'NS Client Version':
+		service_description => 'NSClient++ Version',
+		hostgroup_name => 'windows-servers',
+		check_command => 'check_nt!CLIENTVERSION',
+		target => '/etc/nagios3/conf.d/ppt_nsclient.cfg',
+		use => generic-service,
+	}
+
+	nagios_service { 'Windows Uptime':
+		service_description => 'Uptime',
+		hostgroup_name => 'windows-servers',
+		check_command => 'check_nt!UPTIME',
+		target => '/etc/nagios3/conf.d/ppt_winuptime.cfg',
+		use => generic-service,
+	}
+
+	nagios_service { 'Windows CPU Load':
+		service_description => 'CPU Load',
+		hostgroup_name => 'windows-servers',
+		check_command => 'check_nt!CPULOAD!-l 5,80,90',
+		target => '/etc/nagios3/conf.d/ppt_wincpuload.cfg',
+		use => generic-service,
+	}
+
+	nagios_service { 'Windows Mem Usage':
+		service_description => 'Memory Usage',
+		hostgroup_name => 'windows-servers',
+		check_command => 'check_nt!MEMUSE!-w 80 -c 90',
+		target => '/etc/nagios3/conf.d/ppt_winmem.cfg',
+		use => generic-service,
+	}
+
+	nagios_service { 'Windows Disk Usage':
+		service_description => 'Disk Space',
+		hostgroup_name => 'windows-servers',
+		check_command => 'check_nt!USEDDISKSPACE!-l c -w 80 -c 90',
+		target => '/etc/nagios3/conf.d/ppt_windisk.cfg',
+		use => generic-service,
+	}
+	
+	#### END NT SERVICE DEFINITIONS ####
 }

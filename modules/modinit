@@ -1,0 +1,29 @@
+#!/bin/bash
+# A very rudimentary script for creating the basic file structure for our puppet modules.
+# eg.) ./modinit mysql
+
+if [ $# -eq 0 ]
+	then
+		echo "No module name argument supplied, exiting"
+		exit
+fi
+
+MOD=$1
+declare -a subnames=(files templates manifests)
+mkdir /etc/puppet/modules/$MOD
+
+for var in "${subnames[@]}"
+do	
+	mkdir /etc/puppet/modules/$MOD/$var
+done
+
+printf "class $MOD {\n\tinclude $MOD::install, $MOD::config, $MOD::service\n}\n" > /etc/puppet/modules/$MOD/manifests/init.pp
+
+declare -a a=(install config service)
+
+for var in "${a[@]}"
+do
+	printf "class $MOD::$var {\n}\n" > /etc/puppet/modules/$MOD/manifests/$var.pp
+done
+
+echo Done creating $MOD
