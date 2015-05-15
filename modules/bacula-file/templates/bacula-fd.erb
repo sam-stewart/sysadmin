@@ -29,12 +29,12 @@ Director {
 # "Global" File daemon configuration specifications
 #
 FileDaemon {                          # this is me
-  Name = mgmt-fd
+  Name = <%=@hostname%>-fd
   FDport = 9102                  # where we listen for the director
   WorkingDirectory = /var/lib/bacula
   Pid Directory = /var/run/bacula
   Maximum Concurrent Jobs = 20
-  FDAddress = 127.0.0.1
+  FDAddress = <%=@ipaddress%>
 }
 
 # Send all messages except skipped files back to Director

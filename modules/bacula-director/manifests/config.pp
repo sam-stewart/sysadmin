@@ -3,7 +3,7 @@ class bacula-director::config {
 		ensure => present,
 		source => "puppet:///modules/bacula-director/bacula-dir.conf",
 		mode => 0640,
-		owner => "root",
+		owner => "bacula",
 		group => "bacula",
 		require => Class["bacula-director::install"],
 		notify => Class["bacula-director::service"]
@@ -11,9 +11,9 @@ class bacula-director::config {
 
 	file { "/etc/bacula/bconsole.conf":
 		ensure => present,
-		source => "puppet:///modules/bacula-director/bacula-bconsole.conf",
+		source => "puppet:///modules/bacula-director/bconsole.conf",
 		mode => 0640,
-		owner => "root",
+		owner => "bacula",
 		group => "bacula",
 		require => Class["bacula-director::install"],
 		notify => Class["bacula-director::service"]
