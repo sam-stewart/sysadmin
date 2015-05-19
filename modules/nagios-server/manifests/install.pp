@@ -10,12 +10,16 @@ class nagios-server::install {
 
 	exec { "set-group":
 		command => "/bin/chown root:puppet /etc/nagios3/conf.d",
-		require => Package["nagios3"]
+		require => Package["nagios3"],
+		refreshonly => true,
+		subscribe => Package['nagios3']
 	}
 
 	exec { "set-perms":
 		command => "/bin/chmod 775 /etc/nagios3/conf.d",
-		require => Package["nagios3"]
+		require => Package["nagios3"],
+		refreshonly => true,
+		subscribe => Package['nagios3']
 	}
 }
 	
