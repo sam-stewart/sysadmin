@@ -19,7 +19,7 @@ class nagios-server::config {
 		notification_options => 'd,u,r',
 		contact_groups => 'sysadmins',
 		register => '0',
-		notify => "fix-file-permissions",
+		notify => Exec['fix-file-permissions'],
 	}
 
 	nagios_service { 'generic-service':
@@ -46,7 +46,7 @@ class nagios-server::config {
 		notification_interval => '30',
 		contact_groups => 'sysadmins',
 		register => '0',
-		notify => "fix-file-permissions",
+		notify => Exec['fix-file-permissions'],
 	}
 
 	nagios_contact { 'generic-contact-sysadmin':
@@ -59,9 +59,14 @@ class nagios-server::config {
 		host_notification_options => 'd,u,r,f,s',
 		service_notification_commands => 'notify-service-by-email, notify-service-by-whatsapp',
 		host_notification_commands => 'notify-host-by-email, notify-host-by-whatsapp',
-		notify => "fix-file-permissions",
+		notify => Exec['fix-file-permissions'],
 		register => '0',
 	}	
+
+	nagios_hostgroup { 'generic-hostgroup':
+		register => 0,
+		notify => Exec['fix-file-permissions'],
+	}
 
 	#### END GENERIC DEFINITIONS ####
 
@@ -87,7 +92,7 @@ class nagios-server::config {
 		target => '/etc/nagios3/conf.d/ppt_contactgroups.cfg',
 		alias => 'System Administrators',
 		members => 'fostt2, stewasc3',
-		notify => "fix-file-permissions",
+		notify => Exec['fix-file-permissions'],
 	}
 
 	#### END CONTACT AND CONTACT GROUP DEFINITIONS ####
@@ -133,35 +138,35 @@ class nagios-server::config {
 		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
 		alias => 'Database Servers',
 		members => 'db.sqrawler.com',
-		notify => "fix-file-permissions",
+		use => generic-hostgroup
 	}
 
 	nagios_hostgroup { 'windows-servers':
 		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
 		alias => 'Windows Servers',
 		members => 'ad.sqrawler.com',
-		notify => "fix-file-permissions",
+		use => generic-hostgroup
 	}
 
 	nagios_hostgroup { 'debian-servers':
 		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
 		alias => 'Debian Servers',
 		members => 'mgmt.sqrawler.com, app.sqrawler.com, storage.sqrawler.com, db.sqrawler.com',
-		notify => "fix-file-permissions",
+		use => generic-hostgroup
 	}
 
 	nagios_hostgroup { 'ssh-servers':
 		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
 		alias => 'SSH Servers',
 		members => 'app.sqrawler.com, db.sqrawler.com, mgmt.sqrawler.com, storage.sqrawler.com',
-		notify => "fix-file-permissions",
+		use => generic-hostgroup
 	}
 
 	nagios_hostgroup { 'http-servers':
 		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
 		alias => 'HTTP Servers',
 		members => 'mgmt.sqrawler.com',
-		notify => "fix-file-permissions",
+		use => generic-hostgroup
 	}
 
 	#### END HOST AND HOST GROUP DEFINITIONS ####
@@ -277,8 +282,7 @@ class nagios-server::config {
 	#### END NT SERVICE DEFINITIONS ####
 
 	# Exec to fix file permissions when puppet adds a new file to nagios config
-	exec { "fix-file-permissions" :
+	exec { 'fix-file-permissions' :
 		command => "/bin/chmod -R 644 /etc/nagios3/conf.d/*",
-		refreshonly => true
-	}
+	}	
 }
