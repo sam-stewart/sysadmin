@@ -38,7 +38,8 @@ class nrpe (
     ensure    => running,
     name      => $service_name,
     enable    => true,
-    refreshonly => true,
+    hasrestart => true,
+    hasstatus => true,
     require   => Package[$package_name],
     subscribe => File['nrpe_config'],
   }
