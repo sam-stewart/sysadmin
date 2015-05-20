@@ -284,5 +284,6 @@ class nagios-server::config {
 	# Exec to fix file permissions when puppet adds a new file to nagios config
 	exec { 'fix-file-permissions' :
 		command => "/bin/chmod -R 644 /etc/nagios3/conf.d/*",
+		refreshonly => true,
 	}	
 }
