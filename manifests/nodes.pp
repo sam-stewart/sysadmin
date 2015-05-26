@@ -15,6 +15,7 @@ node 'app' {
 	include apt-cron
 	include nrpe
 	include ntp
+	include owncloud
 }
 
 node 'storage' {

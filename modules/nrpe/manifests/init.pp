@@ -39,7 +39,8 @@ class nrpe (
     name      => $service_name,
     enable    => true,
     hasrestart => true,
-    hasstatus => true,
+    hasstatus => false,
+    pattern => '/usr/sbin/nrpe',
     require   => Package[$package_name],
     subscribe => File['nrpe_config'],
   }

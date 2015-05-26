@@ -64,6 +64,7 @@ class nagios-server::config {
 	}	
 
 	nagios_hostgroup { 'generic-hostgroup':
+		target => '/etc/nagios3/conf.d/ppt_generichostgroups.cfg',
 		register => 0,
 		notify => Exec['fix-file-permissions'],
 	}
