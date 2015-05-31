@@ -166,13 +166,23 @@ class nagios-server::config {
 	nagios_hostgroup { 'http-servers':
 		target => '/etc/nagios3/conf.d/ppt_hostgroups.cfg',
 		alias => 'HTTP Servers',
-		members => 'mgmt.sqrawler.com',
+		members => 'mgmt.sqrawler.com, app.sqrawler.com',
 		use => generic-hostgroup
 	}
 
 	#### END HOST AND HOST GROUP DEFINITIONS ####
 
 	#### REMOTE ACCESSIBLE SERVICE DEFINITIONS ####
+	
+	nagios_service { 'OwnCloud HTTP':
+		service_description => 'Own Cloud',
+		check_command => 'check_http_owncloud',
+		host_name => 'app.sqrawler.com',
+		target => '/etc/nagios3/conf.d/ppt_owncloud_service.cfg',
+		use => generic-service,
+		notify => Exec['fix-file-permissions'],
+		notify => Class['nagios-service']
+	}
 
 	nagios_service { 'SSH':
 		service_description => 'SSH',
@@ -210,6 +220,22 @@ class nagios-server::config {
 		target => '/etc/nagios3/conf.d/ppt_diskspace_service.cfg',
 		check_command => 'check_nrpe_1arg!check_hd',
 		use => generic-service
+	}
+
+	nagios_service { 'Puppet Agent':
+		service_description => 'Puppet Agent',
+		hostgroup_name => 'debian-servers',
+		target => '/etc/nagios3/conf.d/ppt_puppetagent_service.cfg',
+		check_command => 'check_nrpe_1arg!check_puppet_agent',
+		use => generic-service,
+	}
+
+	nagios_service { 'Puppet Master':
+		service_description => 'Puppet Master',
+		host_name => 'mgmt.sqrawler.com',
+		target => '/etc/nagios3/conf.d/ppt_puppetmaster_service.cfg',
+		check_command => 'check_nrpe_1arg!check_puppet_master',
+		use => generic-service,
 	}
 
 	nagios_service { 'CPU Load':
@@ -282,9 +308,11 @@ class nagios-server::config {
 	
 	#### END NT SERVICE DEFINITIONS ####
 
+	#### LOCAL BACULA CHECKS (NOT NRPE) ####
+
 	# Exec to fix file permissions when puppet adds a new file to nagios config
 	exec { 'fix-file-permissions' :
-		command => "/bin/chmod -R 644 /etc/nagios3/conf.d/*",
 		refreshonly => true,
+		command => "/bin/chmod -R 644 /etc/nagios3/conf.d/*",
 	}	
 }
