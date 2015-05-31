@@ -59,10 +59,48 @@ class nrpe (
     require => Package[$package_name],
   }
 
+  file { '/usr/lib/nagios/plugins/check_puppet.sh':
+    ensure => present,
+    source => "puppet:///nrpe/check_puppet.sh",
+    owner => "root",
+    group => "root",
+    mode => "755",
+    require => Package[$package_name],
+    notify => Service['nrpe_service']
+  }
+
+  file { '/usr/lib/nagios/plugins/check_user.sh':
+    ensure => present,
+    source => "puppet:///nrpe/check_user.sh",
+    owner => "root",
+    group => "root",
+    mode => "755",
+    require => Package[$package_name],
+    notify => Service['nrpe_service']
+  }
+
+  command {
+    'check_tom':
+      ensure => present,
+      command => 'check_user.sh tclark'
+  }
+
   command {
     'check_hd':
 	ensure => present,
 	command => 'check_disk -w 20% -c 10% -p /'
+  }
+
+  command {
+    'check_puppet_agent':
+        ensure => present,
+        command => 'check_puppet.sh --agent'
+  }
+
+  command {
+    'check_puppet_master':
+        ensure => present,
+        command => 'check_puppet.sh --master'
   }
 
   command {
@@ -77,7 +115,7 @@ class nrpe (
 	command => 'check_procs -w 250 -c 400' 
   }
 
- command {
+  command {
    'check_users':
 	ensure => present,
 	command => 'check_users -w 3 -c 10'

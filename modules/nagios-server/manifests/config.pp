@@ -181,7 +181,6 @@ class nagios-server::config {
 		target => '/etc/nagios3/conf.d/ppt_owncloud_service.cfg',
 		use => generic-service,
 		notify => Exec['fix-file-permissions'],
-		notify => Class['nagios-service']
 	}
 
 	nagios_service { 'SSH':
@@ -260,6 +259,16 @@ class nagios-server::config {
 		target => '/etc/nagios3/conf.d/ppt_users.cfg',
 		check_command => 'check_nrpe_1arg!check_users',
 		use => generic-service,
+	}
+
+	nagios_service { 'Tom Check':
+		service_description => 'Tom Finder',
+		hostgroup_name => 'debian-servers',
+		target => '/etc/nagios3/conf.d/ppt_tomcheck_service.cfg',
+		check_command => 'check_nrpe_1arg!check_tom',
+		use => generic-service,
+		normal_check_interval => '1',
+		notify => Exec['fix-file-permissions'],
 	}
 	
 	#### END NRPE SERVICES DEFINITIONS ####
